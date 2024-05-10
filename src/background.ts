@@ -1,17 +1,21 @@
-let active = false;
+// let active = false;
 
-function makeOrange(color: string): void {
-  document.body.style.backgroundColor = color;
-}
+// function makeOrange(color: string): void {
+//   document.body.style.backgroundColor = color;
+// }
 
-chrome.action.onClicked.addListener((tab) => {
-  active = !active;
-  const color = active ? "orange" : "white";
-  chrome.scripting
-    .executeScript({
-      target: { tabId: tab.id ? tab.id : -1 },
-      func: makeOrange,
-      args: [color],
-    })
-    .then();
+// chrome.action.onClicked.addListener((tab) => {
+//   active = !active;
+//   const color = active ? "orange" : "white";
+//   chrome.scripting
+//     .executeScript({
+//       target: { tabId: tab.id ? tab.id : -1 },
+//       func: makeOrange,
+//       args: [color],
+//     })
+//     .then();
+// });
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  console.log(request);
 });
