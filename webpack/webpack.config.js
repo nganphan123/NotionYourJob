@@ -1,5 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   mode: "production",
   entry: {
@@ -19,9 +20,20 @@ module.exports = {
         loader: "ts-loader",
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
     ],
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      title: "notionjobs", // change this to your app title
+      manifest: "manifest.json",
+      filename: "popup.html",
+      template: path.resolve(__dirname, "..", "src", "popup.html"),
+      hash: true,
+    }),
     new CopyPlugin({
       patterns: [{ from: ".", to: ".", context: "public" }],
     }),
