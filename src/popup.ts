@@ -8,6 +8,7 @@ const handleSubmit = async (e: SubmitEvent) => {
   const company = (document.getElementById("company")! as HTMLInputElement)
     .value;
   const role = (document.getElementById("role")! as HTMLInputElement).value;
+  const link = (document.getElementById("job-link")! as HTMLInputElement).value;
   const notion = new Client({ auth: apiKey });
   const response = await notion.pages.create({
     parent: {
@@ -37,6 +38,10 @@ const handleSubmit = async (e: SubmitEvent) => {
           },
         ],
       },
+      Link: {
+        type: "url",
+        url: link,
+      },
     },
   });
   // log in backgroun file
@@ -48,3 +53,12 @@ const handleSubmit = async (e: SubmitEvent) => {
 if (form) {
   form.addEventListener("submit", (e) => handleSubmit(e));
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    let activeTab: chrome.tabs.Tab = tabs[0];
+    let tabUrl = activeTab.url;
+    let jobLink = document.getElementById("job-link");
+    (jobLink as HTMLInputElement).value = tabUrl ?? "";
+  });
+});
