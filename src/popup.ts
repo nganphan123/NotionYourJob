@@ -6,6 +6,8 @@ const handleSubmit = async (e: SubmitEvent) => {
   const apiKey = (document.getElementById("api-key")! as HTMLInputElement)
     .value;
   const dbId = (document.getElementById("db-id")! as HTMLInputElement).value;
+  const descId = (document.getElementById("desc-id")! as HTMLInputElement)
+    .value;
   const company = (document.getElementById("company")! as HTMLInputElement)
     .value;
   const role = (document.getElementById("role")! as HTMLInputElement).value;
@@ -16,11 +18,9 @@ const handleSubmit = async (e: SubmitEvent) => {
   const notion = new Client({ auth: apiKey });
 
   // parse page
-  let description: string = "";
+  let description: string[] = [];
   try {
-    parsePage(await extractCurrentPageHTML()).forEach(
-      (s) => (description += `-${s}\n`)
-    );
+    description = parsePage(await extractCurrentPageHTML());
   } catch (e) {
     if (e instanceof Error) {
       errorMessage.innerText = e.message;
@@ -28,7 +28,38 @@ const handleSubmit = async (e: SubmitEvent) => {
     return;
   }
 
-  const response = await notion.pages.create({
+  // create description page
+  let createDescResp = await notion.pages.create({
+    parent: {
+      type: "page_id",
+      page_id: descId,
+    },
+    properties: {
+      title: [
+        {
+          text: {
+            content: "Job 1",
+          },
+        },
+      ],
+    },
+
+    children: description.map((line: string) => ({
+      bulleted_list_item: {
+        rich_text: [
+          {
+            type: "text",
+            text: {
+              content: line,
+              link: null,
+            },
+          },
+        ],
+      },
+    })),
+  });
+  // add new job to db
+  createDescResp = await notion.pages.create({
     parent: {
       type: "database_id",
       database_id: dbId,
@@ -60,22 +91,20 @@ const handleSubmit = async (e: SubmitEvent) => {
         type: "url",
         url: link,
       },
-      //   Description: {
-      //     type: "rich_text",
-      //     rich_text: [
-      //       {
-      //         type: "text",
-      //         text: {
-      //           content: description,
-      //         },
-      //       },
-      //     ],
-      //   },
+      Description: {
+        type: "rich_text",
+        rich_text: [
+          {
+            type: "mention",
+            mention: {
+              page: {
+                id: createDescResp.id,
+              },
+            },
+          },
+        ],
+      },
     },
-  });
-  // log in background file
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id!, { data: response });
   });
   errorMessage.innerText = "success";
 };
