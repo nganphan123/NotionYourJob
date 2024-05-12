@@ -1,1 +1,0 @@
-(()=>{"use strict";chrome.runtime.onMessage.addListener((function(e,n,o){console.log(e)}))})();
