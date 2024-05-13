@@ -1,6 +1,7 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 module.exports = {
   mode: "production",
   entry: {
@@ -29,6 +30,14 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      "process.env.NOTION_OAUTH_SECRET": JSON.stringify(
+        process.env.NOTION_OAUTH_SECRET || ""
+      ),
+      "process.env.NOTION_OAUTH_CLIENT": JSON.stringify(
+        process.env.NOTION_OAUTH_CLIENT || ""
+      ),
+    }),
     new HtmlWebpackPlugin({
       title: "notionjobs", // change this to your app title
       manifest: "manifest.json",

@@ -23,10 +23,12 @@ chrome.identity.launchWebAuthFlow(
     // exchange code for access token
     let encoded: string;
     try {
-      const keys = fs.readFileSync("./.env", "utf-8").split(",");
-
+      const NOTION_OAUTH_CLIENT = process.env.NOTION_OAUTH_CLIENT;
+      const NOTION_OAUTH_SECRET = process.env.NOTION_OAUTH_SECRET;
       // encode in base 64
-      encoded = Buffer.from(`${keys[0]}:${keys[1]}`).toString("base64");
+      encoded = Buffer.from(
+        `${NOTION_OAUTH_CLIENT}:${NOTION_OAUTH_SECRET}`
+      ).toString("base64");
     } catch (err) {
       console.log(err);
       throw err;
