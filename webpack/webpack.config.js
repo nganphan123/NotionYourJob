@@ -7,23 +7,32 @@ module.exports = {
   entry: {
     background: path.resolve(__dirname, "..", "src", "background.ts"),
     popup: path.resolve(__dirname, "..", "src", "popup.ts"),
+    index: "./src/index.tsx",
   },
   output: {
     path: path.join(__dirname, "../dist"),
     filename: "[name].js",
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: [".ts", ".js", ".tsx"],
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              compilerOptions: { noEmit: false },
+            },
+          },
+        ],
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/,
+        exclude: /node_modules/,
+        test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
     ],
@@ -44,8 +53,20 @@ module.exports = {
       template: path.resolve(__dirname, "..", "src", "popup.html"),
       hash: true,
     }),
+    ...getHtmlPlugins(["index"]),
     new CopyPlugin({
       patterns: [{ from: ".", to: ".", context: "public" }],
     }),
   ],
 };
+
+function getHtmlPlugins(chunks) {
+  return chunks.map(
+    (chunk) =>
+      new HtmlWebpackPlugin({
+        title: "notionjobs",
+        filename: `${chunk}.html`,
+        chunks: [chunk],
+      })
+  );
+}
