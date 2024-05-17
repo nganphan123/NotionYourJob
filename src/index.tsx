@@ -4,6 +4,7 @@ import SetDBForm from "./components/SetUpDBForm";
 import JobForm from "./components/JobForm";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";
+import "./App.css";
 
 const root = document.createElement("div");
 root.className = "container";

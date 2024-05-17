@@ -46,13 +46,13 @@ module.exports = {
         process.env.NOTION_OAUTH_CLIENT || ""
       ),
     }),
-    new HtmlWebpackPlugin({
-      title: "notionjobs", // change this to your app title
-      manifest: "manifest.json",
-      filename: "home.html",
-      template: path.resolve(__dirname, "..", "src", "home.html"),
-      hash: true,
-    }),
+    // new HtmlWebpackPlugin({
+    //   title: "notionjobs", // change this to your app title
+    //   manifest: "manifest.json",
+    //   filename: "home.html",
+    //   template: path.resolve(__dirname, "..", "src", "home.html"),
+    //   hash: true,
+    // }),
     ...getHtmlPlugins(["index"]),
     new CopyPlugin({
       patterns: [{ from: ".", to: ".", context: "public" }],
