@@ -6,7 +6,7 @@ module.exports = {
   mode: "production",
   entry: {
     background: path.resolve(__dirname, "..", "src", "background.ts"),
-    popup: path.resolve(__dirname, "..", "src", "popup.ts"),
+    auth: path.resolve(__dirname, "..", "src", "auth.ts"),
     index: "./src/index.tsx",
   },
   output: {
@@ -49,8 +49,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "notionjobs", // change this to your app title
       manifest: "manifest.json",
-      filename: "popup.html",
-      template: path.resolve(__dirname, "..", "src", "popup.html"),
+      filename: "home.html",
+      template: path.resolve(__dirname, "..", "src", "home.html"),
       hash: true,
     }),
     ...getHtmlPlugins(["index"]),
