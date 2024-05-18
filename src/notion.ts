@@ -104,7 +104,6 @@ export async function addJob(
 }
 
 export async function getAccessiblePages() {
-  console.log("api key ", apiKey);
   const response = await notion.search({
     filter: {
       value: "page",
