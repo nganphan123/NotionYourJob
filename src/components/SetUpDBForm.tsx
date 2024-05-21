@@ -7,11 +7,12 @@ import { redirect } from "react-router-dom";
 interface pageTitle {
   title: string;
   url: string;
+  id: string;
 }
 
 export default function SetDBForm() {
   const [titles, setTitles] = useState<pageTitle[]>([]);
-  const [selected, setSelected] = useState<string>();
+  const [selected, setSelected] = useState<string>("");
   useEffect(() => {
     async function fetchPages() {
       const pages = (await getAccessiblePages()) as PageObjectResponse[];
@@ -24,6 +25,7 @@ export default function SetDBForm() {
           titles.push({
             title: titleProp.title[0].text.content as string,
             url: notionPage.url,
+            id: notionPage.id,
           });
         }
       });
@@ -31,24 +33,27 @@ export default function SetDBForm() {
     }
     fetchPages();
   }, []);
-  const onSubmit = useCallback((event: any) => {
-    setDBId(event.target.value)
-      .then(() => {
-        redirect("/job");
-      })
-      .catch((e) => {
-        console.log("Error", e);
-        alert(`Couldn't set db id. Error: ${e}`);
-      });
-  }, []);
+  const onSubmit = useCallback(
+    (event: any) => {
+      setDBId(selected)
+        .then(() => {
+          redirect("/job");
+        })
+        .catch((e) => {
+          console.log("Error", e);
+          alert(`Couldn't set db id. Error: ${e}`);
+        });
+    },
+    [selected]
+  );
   const titleList = titles.map((entity) => {
     return (
       <label>
         <a href={entity.url}>{entity.title}</a>:
         <input
           type="checkbox"
-          onClick={() => setSelected(entity.title)}
-          checked={entity.title == selected}
+          onClick={() => setSelected(entity.id)}
+          checked={entity.id == selected}
         ></input>
       </label>
     );

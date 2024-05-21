@@ -5,7 +5,7 @@ import { getDBId } from "../store";
 import { Navigate } from "react-router-dom";
 
 export default function JobForm() {
-  const [dbId, setDbId] = useState<string>("");
+  const [dbId, setDbId] = useState<string>();
   const [descId, setDescId] = useState<string>("");
   const [company, setCompany] = useState<string>("");
   const [role, setRole] = useState<string>("");
@@ -22,7 +22,7 @@ export default function JobForm() {
         // create description page
         const descPageId = await addDescriptionPage(descId, description);
         // add new job to db
-        await addJob(dbId, company, role, link, descPageId);
+        await addJob(dbId!, company, role, link, descPageId);
         setErrorMessage("success");
       } catch (e) {
         if (e instanceof Error) {
@@ -62,7 +62,9 @@ export default function JobForm() {
     });
   }, [chrome.tabs]);
 
-  if (dbId == "") {
+  if (dbId == undefined) {
+    return <div>Loading</div>;
+  } else if (dbId == "") {
     return <Navigate to={"/set-up-db"} />;
   }
   return (

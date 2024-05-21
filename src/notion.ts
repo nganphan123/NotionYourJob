@@ -1,6 +1,5 @@
 import { Client } from "@notionhq/client";
 import { getAcessToken } from "./store";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
 let apiKey: string = "";
 let notion: Client;
