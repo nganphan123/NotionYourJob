@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { getAccessiblePages } from "../notion";
+import { useState, useEffect, useCallback } from "react";
+import { getAccessiblePages, setupNotion } from "../notion";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { setDBId } from "../store";
 import { redirect } from "react-router-dom";
 
 interface pageTitle {
@@ -33,19 +32,16 @@ export default function SetDBForm() {
     }
     fetchPages();
   }, []);
-  const onSubmit = useCallback(
-    (event: any) => {
-      setDBId(selected)
-        .then(() => {
-          redirect("/job");
-        })
-        .catch((e) => {
-          console.log("Error", e);
-          alert(`Couldn't set db id. Error: ${e}`);
-        });
-    },
-    [selected]
-  );
+  const onSubmit = useCallback(() => {
+    try {
+      setupNotion(selected).then(() => {
+        redirect("/job");
+      });
+    } catch (e) {
+      console.log("Error", e);
+      alert(`Couldn't set db id. Error: ${e}`);
+    }
+  }, [selected]);
   const titleList = titles.map((entity) => {
     return (
       <label>
@@ -59,11 +55,13 @@ export default function SetDBForm() {
     );
   });
   return (
-    <form>
+    <>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {titleList}
       </div>
-      <input type="submit" value="Submit" onClick={onSubmit} />
-    </form>
+      <button id="submitButton" type="submit" onClick={onSubmit}>
+        Submit
+      </button>
+    </>
   );
 }
