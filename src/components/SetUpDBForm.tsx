@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getAccessiblePages, setupNotion } from "../notion";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 interface pageTitle {
   title: string;
@@ -12,6 +12,7 @@ interface pageTitle {
 export default function SetDBForm() {
   const [titles, setTitles] = useState<pageTitle[]>([]);
   const [selected, setSelected] = useState<string>("");
+  const [redirectToJob, setRedirectToJob] = useState<boolean>(false);
   useEffect(() => {
     async function fetchPages() {
       const pages = (await getAccessiblePages()) as PageObjectResponse[];
@@ -35,7 +36,7 @@ export default function SetDBForm() {
   const onSubmit = useCallback(() => {
     try {
       setupNotion(selected).then(() => {
-        redirect("/job");
+        setRedirectToJob(true);
       });
     } catch (e) {
       console.log("Error", e);
@@ -54,12 +55,20 @@ export default function SetDBForm() {
       </label>
     );
   });
+  if (redirectToJob) {
+    return <Navigate to={"/job"} />;
+  }
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {titleList}
       </div>
-      <button id="submitButton" type="submit" onClick={onSubmit}>
+      <button
+        id="submitButton"
+        type="submit"
+        onClick={onSubmit}
+        disabled={redirectToJob}
+      >
         Submit
       </button>
     </>
