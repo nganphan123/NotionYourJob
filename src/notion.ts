@@ -31,9 +31,11 @@ export async function setupNotion(workspaceId: string) {
   let createDb = createJobDatabase(response.id).then(async (id) => {
     await setDBId(id);
   });
-  let createDescContainer = addDescContainer(response.id).then(async (id) => {
-    await setDescPageId(id);
-  });
+  let createDescContainer = setTimeout(() => {
+    addDescContainer(response.id).then(async (id) => {
+      await setDescPageId(id);
+    });
+  }, 1000);
   await createDb;
   await createDescContainer;
 }
