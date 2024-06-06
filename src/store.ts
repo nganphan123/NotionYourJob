@@ -35,7 +35,7 @@ export async function setDBId(id: string) {
 
 // Description Page Id
 const DESC_PAGE_ID = "descPageId";
-export function getDescPageId() {
+export function getDescContainerId() {
   return toPromise((resolve: any, reject: any) => {
     chrome.storage.local.get([DESC_PAGE_ID], (result) => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
@@ -44,7 +44,7 @@ export function getDescPageId() {
   });
 }
 
-export async function setDescPageId(id: string) {
+export async function setDescContainerId(id: string) {
   return toPromise((resolve: any, reject: any) => {
     chrome.storage.local.set({ [DESC_PAGE_ID]: id }, () => {
       if (chrome.runtime.lastError) {

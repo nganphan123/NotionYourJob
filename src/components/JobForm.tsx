@@ -1,41 +1,32 @@
 import { Fragment, useState, useEffect, useCallback } from "react";
-import { addDescriptionPage, addJob } from "../notion";
-import { parsePage, extractCurrentPageHTML } from "../parsing";
 import { getDBId } from "../store";
 import { Navigate } from "react-router-dom";
+import { MessageType } from "../background";
 
 export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
-  const [descId, setDescId] = useState<string>("");
   const [company, setCompany] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [link, setLink] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const handleSubmit = useCallback(
-    async (e: SubmitEvent) => {
-      e.preventDefault();
+  const handleSubmit = async () => {
+    var chromeTabs = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
 
-      // parse page
-      let description: string[] = [];
-      try {
-        description = parsePage(await extractCurrentPageHTML());
-        // create description page
-        const descPageId = await addDescriptionPage(descId, description);
-        // add new job to db
-        await addJob(dbId!, company, role, link, descPageId);
-        setErrorMessage("success");
-      } catch (e) {
-        if (e instanceof Error) {
-          setErrorMessage(e.message);
-        }
-        return;
-      }
-    },
-    [dbId, descId, company, role, link]
-  );
-  const onDBIdChange = useCallback((e: any) => {
-    setDbId(e.target.value);
-  }, []);
+    var activeTabId = chromeTabs[0].id;
+    if (!activeTabId) {
+      throw Error("Couldn't find active tab id");
+    }
+    chrome.runtime.sendMessage({
+      type: MessageType.ADD_JOB,
+      company: company,
+      role: role,
+      link: link,
+      activeTabId: activeTabId,
+    });
+  };
   const onCompanyChange = useCallback((e: any) => {
     setCompany(e.target.value);
   }, []);
@@ -44,9 +35,6 @@ export default function JobForm() {
   }, []);
   const onJobLinkChange = useCallback((e: any) => {
     setLink(e.target.value);
-  }, []);
-  const onDescIdChange = useCallback((e: any) => {
-    setDescId(e.target.value);
   }, []);
 
   useEffect(() => {
@@ -70,22 +58,6 @@ export default function JobForm() {
   return (
     <Fragment>
       <form id="notion-form-data">
-        <label htmlFor="db-id">Database ID</label>
-        <input
-          type="text"
-          id="db-id"
-          value={dbId}
-          onChange={onDBIdChange}
-          required
-        />
-        <label htmlFor="desc-id">Description db ID</label>
-        <input
-          type="text"
-          id="desc-id"
-          value={descId}
-          onChange={onDescIdChange}
-          required
-        />
         <label htmlFor="company">Company name</label>
         <input
           type="text"
@@ -109,7 +81,7 @@ export default function JobForm() {
           value={link}
           onChange={onJobLinkChange}
         />
-        <button id="submitButton" onClick={() => handleSubmit}>
+        <button id="submitButton" onClick={async () => await handleSubmit()}>
           Notion
         </button>
       </form>

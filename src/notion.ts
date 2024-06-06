@@ -1,12 +1,30 @@
 import { Client } from "@notionhq/client";
-import { getAcessToken, setDBId, setDescPageId } from "./store";
+import {
+  getAcessToken,
+  getDBId,
+  getDescContainerId,
+  setDBId,
+  setDescContainerId,
+} from "./store";
 
 let apiKey: string = "";
 let notion: Client;
+let descContainerId: string = "";
+let dbId: string = "";
 getAcessToken().then((key) => {
   if (key != "") {
     apiKey = key;
     notion = new Client({ auth: apiKey });
+  }
+});
+getDescContainerId().then((id) => {
+  if (id != "") {
+    descContainerId = id;
+  }
+});
+getDBId().then((id) => {
+  if (id != "") {
+    dbId = id;
   }
 });
 
@@ -33,11 +51,11 @@ export async function setupNotion(workspaceId: string) {
   });
   let createDescContainer = setTimeout(() => {
     addDescContainer(response.id).then(async (id) => {
-      await setDescPageId(id);
+      await setDescContainerId(id);
     });
   }, 1000);
   await createDb;
-  await createDescContainer;
+  createDescContainer;
 }
 
 // job database
@@ -102,14 +120,11 @@ async function addDescContainer(parentPageId: string) {
   return response.id;
 }
 
-export async function addDescriptionPage(
-  descId: string,
-  description: string[]
-) {
+export async function addDescriptionPage(description: string[]) {
   const response = await notion.pages.create({
     parent: {
       type: "page_id",
-      page_id: descId,
+      page_id: descContainerId,
     },
     properties: {
       title: [
@@ -139,11 +154,10 @@ export async function addDescriptionPage(
 }
 
 export async function addJob(
-  dbId: string,
   company: string,
   role: string,
   link: string,
-  descriptionPageId: string
+  descPageId: string
 ) {
   await notion.pages.create({
     parent: {
@@ -184,7 +198,7 @@ export async function addJob(
             type: "mention",
             mention: {
               page: {
-                id: descriptionPageId,
+                id: descPageId,
               },
             },
           },
