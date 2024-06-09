@@ -1,11 +1,14 @@
 body {
-  min-width: 200px;
-  max-width: 250px;
+  width: 200px;
+  height: 200px;
+  background-color: #b8d0e8;
+}
+.MuiInputBase-root {
+  background-color: lightsteelblue;
+  opacity: 80%;
 }
 button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+  background-color: lightsteelblue;
 }
 /* #error-message {
   display: none;

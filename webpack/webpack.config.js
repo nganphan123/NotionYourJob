@@ -47,7 +47,7 @@ module.exports = {
       ),
     }),
     // new HtmlWebpackPlugin({
-    //   title: "notionjobs", // change this to your app title
+    //   title: "notionjobs"
     //   manifest: "manifest.json",
     //   filename: "home.html",
     //   template: path.resolve(__dirname, "..", "src", "home.html"),

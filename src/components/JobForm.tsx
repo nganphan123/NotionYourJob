@@ -1,7 +1,14 @@
-import { Fragment, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getDBId } from "../store";
 import { Navigate } from "react-router-dom";
 import { MessageType } from "../background";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Stack,
+} from "@mui/material";
 
 export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
@@ -56,36 +63,46 @@ export default function JobForm() {
     return <Navigate to={"/set-up-db"} />;
   }
   return (
-    <Fragment>
-      <form id="notion-form-data">
-        <label htmlFor="company">Company name</label>
-        <input
-          type="text"
+    <Stack spacing={2}>
+      <FormControl required>
+        <InputLabel htmlFor="company">Company</InputLabel>
+        <OutlinedInput
           id="company"
-          value={company}
+          label="Company"
           onChange={onCompanyChange}
-          required
+          size="small"
+          sx={{ borderRadius: "50px" }}
         />
-        <label htmlFor="role">Role</label>
-        <input
-          type="text"
+      </FormControl>
+      <FormControl required>
+        <InputLabel htmlFor="role">Role</InputLabel>
+        <OutlinedInput
           id="role"
-          value={role}
+          label="Role"
           onChange={onRoleChange}
-          required
+          size="small"
+          sx={{ borderRadius: "50px" }}
         />
-        <label htmlFor="role">Job link</label>
-        <input
-          type="text"
-          id="job-link"
-          value={link}
+      </FormControl>
+      <FormControl required>
+        <InputLabel htmlFor="jobLink">Job Link</InputLabel>
+        <OutlinedInput
+          id="jobLink"
+          label="Job Link"
           onChange={onJobLinkChange}
+          defaultValue={link}
+          size="small"
+          sx={{ borderRadius: "50px" }}
         />
-        <button id="submitButton" onClick={async () => await handleSubmit()}>
-          Notion
-        </button>
-      </form>
-      <p id="error-message">{errorMessage}</p>
-    </Fragment>
+      </FormControl>
+      <Button
+        variant="contained"
+        onClick={async () => await handleSubmit()}
+        disabled={!company || !link || !role}
+        sx={{ borderRadius: "50px" }}
+      >
+        Notion
+      </Button>
+    </Stack>
   );
 }
