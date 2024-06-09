@@ -120,7 +120,7 @@ async function addDescContainer(parentPageId: string) {
   return response.id;
 }
 
-export async function addDescriptionPage(description: string[]) {
+export async function addDescriptionPage(description: string[], title: string) {
   const response = await notion.pages.create({
     parent: {
       type: "page_id",
@@ -130,7 +130,7 @@ export async function addDescriptionPage(description: string[]) {
       title: [
         {
           text: {
-            content: "Job 1",
+            content: title,
           },
         },
       ],

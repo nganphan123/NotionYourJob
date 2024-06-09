@@ -23,7 +23,10 @@ chrome.runtime.onMessage.addListener(async function ({
     const html = await extractCurrentPageHTML(activeTabId);
     description = parsePage(html);
     // create description page
-    const descPageId = await addDescriptionPage(description);
+    const descPageId = await addDescriptionPage(
+      description,
+      `${company}-${role}`
+    );
     // add new job to db
     await addJob(company, role, link, descPageId);
   } catch (e) {
