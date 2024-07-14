@@ -1,9 +1,13 @@
 import { Buffer } from "buffer";
 import { getAcessToken as getAccessToken, setAccessToken } from "./store";
-const authUrl =
-  "https://api.notion.com/v1/oauth/authorize?client_id=d69baf21-7711-4141-b13b-b73d026f1911&response_type=code&owner=user&redirect_uri=https%3A%2F%2Fdfkecmdigbinodeabmogmmipioikkjjh.chromiumapp.org%2Fnotion-app";
-const authRedirectUrl =
-  "https://dfkecmdigbinodeabmogmmipioikkjjh.chromiumapp.org/notion-app";
+
+const NOTION_OAUTH_CLIENT = process.env.NOTION_OAUTH_CLIENT;
+const NOTION_OAUTH_SECRET = process.env.NOTION_OAUTH_SECRET;
+const CHROME_EXTENSION_ID = process.env.CHROME_EXTENSION_ID;
+const NOTION_AUTH_REDIRECT_URL = `https://${CHROME_EXTENSION_ID}.chromiumapp.org/notion-app`;
+const NOTION_AUTH_URL = `https://api.notion.com/v1/oauth/authorize?client_id=${NOTION_OAUTH_CLIENT}&response_type=code&owner=user&redirect_uri=${encodeURIComponent(
+  NOTION_AUTH_REDIRECT_URL!
+)}`;
 
 export function isUserLogin() {
   return getAccessToken().then((token) => {
@@ -16,7 +20,7 @@ export function isUserLogin() {
 
 export function login() {
   chrome.identity.launchWebAuthFlow(
-    { url: authUrl, interactive: true },
+    { url: NOTION_AUTH_URL!, interactive: true },
     async function (redirect_uri) {
       if (!redirect_uri) {
         throw Error("Couldn't find redirect url");
@@ -34,8 +38,6 @@ export function login() {
 
       let encoded: string;
       try {
-        const NOTION_OAUTH_CLIENT = process.env.NOTION_OAUTH_CLIENT;
-        const NOTION_OAUTH_SECRET = process.env.NOTION_OAUTH_SECRET;
         // encode in base 64
         encoded = Buffer.from(
           `${NOTION_OAUTH_CLIENT}:${NOTION_OAUTH_SECRET}`
@@ -55,7 +57,7 @@ export function login() {
         body: JSON.stringify({
           grant_type: "authorization_code",
           code: code,
-          redirect_uri: authRedirectUrl,
+          redirect_uri: NOTION_AUTH_REDIRECT_URL,
         }),
       });
       let accessToken: string = await response.json().then((json) => {
