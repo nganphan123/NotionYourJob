@@ -9,6 +9,7 @@ import {
   OutlinedInput,
   Stack,
 } from "@mui/material";
+import Logo from "./Logo";
 
 export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
@@ -63,7 +64,8 @@ export default function JobForm() {
     return <Navigate to={"/set-up-db"} />;
   }
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} alignItems={"center"}>
+      <Logo width={100} height={50} />
       <FormControl required>
         <InputLabel htmlFor="company">Company</InputLabel>
         <OutlinedInput
@@ -71,7 +73,6 @@ export default function JobForm() {
           label="Company"
           onChange={onCompanyChange}
           size="small"
-          sx={{ borderRadius: "50px" }}
         />
       </FormControl>
       <FormControl required>
@@ -81,7 +82,6 @@ export default function JobForm() {
           label="Role"
           onChange={onRoleChange}
           size="small"
-          sx={{ borderRadius: "50px" }}
         />
       </FormControl>
       <FormControl required>
@@ -92,14 +92,16 @@ export default function JobForm() {
           onChange={onJobLinkChange}
           defaultValue={link}
           size="small"
-          sx={{ borderRadius: "50px" }}
         />
       </FormControl>
       <Button
+        sx={{
+          backgroundColor: "#92A0AD",
+          ":hover": { backgroundColor: "lightslategrey" },
+        }}
         variant="contained"
         onClick={async () => await handleSubmit()}
         disabled={!company || !link || !role}
-        sx={{ borderRadius: "50px" }}
       >
         Notion
       </Button>
