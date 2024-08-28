@@ -20,8 +20,11 @@ def crawl_job():
     spider = get_provider_handler(get_provider(platform))
     process.crawl(spider)
     process.start()
-    return results
+    # TODO: take train file index input
+    file = open('./output/train{idx}.txt'.format(idx=0), 'a')
+    for result in results:
+        file.write(result['item']+'\n')
+    file.close()
 
 if __name__ == "__main__":
-    results = crawl_job()
-    print(results)
+    crawl_job()

@@ -57,9 +57,9 @@ class LinkedInSpider(scrapy.Spider):
 
         # extract listing items
         top_card_layout = response.css(
-            "section.top-card-layout"
+            "div.top-card-layout__entity-info"
         ).get()
         soup = BeautifulSoup(top_card_layout, 'html.parser')
-        text_string = soup.get_text('\n', strip=True)
-        text_string = re.sub(' \n', '', text_string)
+        text_string = soup.get_text('. ', strip=True)
+        # text_string = re.sub(' \n', '', text_string)
         yield {'item': text_string}
