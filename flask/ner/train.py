@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 import spacy
 from spacy.tokens import DocBin
 from tqdm import tqdm
+from spacy import displacy
 
 # Define a function to create spaCy DocBin objects from the annotated data
 def get_spacy_doc(file, data):
@@ -52,7 +53,7 @@ def get_spacy_doc(file, data):
 
 if __name__ == "__main__":
     # Load the annotated data from a JSON file
-    cv_data = json.load(open('./annotations.json','r'))
+    cv_data = json.load(open('./annotations(1).json','r'))
 
     # Display the number of items in the dataset
     print("Data size", len(cv_data))
