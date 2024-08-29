@@ -11,6 +11,13 @@ export function parsePage(html: string) {
   return desc;
 }
 
+// TODO: refactor parsePage()
+export function parsePage2(html: string){
+  let parser = parse(html);
+  const h1 = parser.querySelector("h1");
+  return h1? h1.text : "";
+}
+
 export async function extractCurrentPageHTML(activeTabId: number) {
   var extractedResult = await chrome.scripting.executeScript({
     target: { tabId: activeTabId },
