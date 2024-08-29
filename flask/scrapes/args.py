@@ -35,4 +35,10 @@ def get_arg_parser():
     parser.add_argument(
         "-p", "--provider", default=Provider.LINKEDIN.value, help="Job Posting Sites"
     )
+    parser.add_argument(
+        "-lp", "--linkedin", default = 1
+    )
+    parser.add_argument(
+        "--page", default=0
+    )
     return parser

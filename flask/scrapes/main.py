@@ -18,10 +18,11 @@ def crawl_job():
     process = CrawlerProcess(settings=get_project_settings())
     # for platform in platforms:
     spider = get_provider_handler(get_provider(platform))
-    process.crawl(spider)
+    process.crawl(spider, int(options.linkedin))
     process.start()
     # TODO: take train file index input
-    file = open('./output/train{idx}.txt'.format(idx=0), 'a')
+    file = open('./output/train{idx}.txt'.format(idx=options.page), 'a')
+    # file = open('../ner/test_data/file{idx}.txt'.format(idx=0), 'a')
     for result in results:
         file.write(result['item']+'\n')
     file.close()

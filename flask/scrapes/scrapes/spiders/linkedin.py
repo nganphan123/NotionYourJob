@@ -12,23 +12,21 @@ class LinkedInSpider(scrapy.Spider):
     name = "linkedin"
     baseUrl = "https://www.linkedin.com/jobs/api/seeMoreJobPostings/search"
 
-    # def __init__(self):
-    #     self.page = request.page
+    def __init__(self, page):
+        self.page = page
 
-    # def prepareUrl(self, pageIdx) -> str:
+    def prepareUrl(self, pageIdx) -> str:
         # params from user input
         # linkedin groups jobs in batch of 25
-        # params = {
-        #     "keywords": self.jobTitle,
-        #     "location": self.location,
-        #     "start": pageIdx * 25,
-        # }
+        params = {
+            "start": pageIdx * 25,
+        }
         # encode params to url format
-        # query = urlencode(params)
+        query = urlencode(params)
         # parse url
-        # urlParts = urlparse.urlparse(self.baseUrl)
-        # # construct final url
-        # return urlParts._replace(query=query).geturl()
+        urlParts = urlparse.urlparse(self.baseUrl)
+        # construct final url
+        return urlParts._replace(query=query).geturl()
 
     def start_requests(self):
         # firstBatch = self.prepareUrl(self.page * 2)
@@ -37,7 +35,7 @@ class LinkedInSpider(scrapy.Spider):
         # yield scrapy.Request(url=firstBatch, callback=self.parse)
         # self.logger.info("Visited %s", secondBatch)
         # yield scrapy.Request(url=secondBatch, callback=self.parse)
-        yield scrapy.Request(url=self.baseUrl, callback=self.parse)
+        yield scrapy.Request(url=self.prepareUrl(self.page), callback=self.parse)
 
     def parse(self, response):
         for job in response.css("div.base-card"):
@@ -60,6 +58,6 @@ class LinkedInSpider(scrapy.Spider):
             "div.top-card-layout__entity-info"
         ).get()
         soup = BeautifulSoup(top_card_layout, 'html.parser')
-        text_string = soup.get_text('. ', strip=True)
+        text_string = soup.get_text(' . ', strip=True)
         # text_string = re.sub(' \n', '', text_string)
         yield {'item': text_string}
