@@ -10,6 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 import Logo from "./Logo";
+import { extractCurrentPageHTML, parsePage, parsePage2 } from "../parsing";
 
 export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
@@ -17,7 +18,9 @@ export default function JobForm() {
   const [role, setRole] = useState<string>("");
   const [link, setLink] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [activeTab, setTabId] = useState<chrome.tabs.Tab>();
   const handleSubmit = async () => {
+    // TODO: refactor get active tab function
     var chromeTabs = await chrome.tabs.query({
       active: true,
       currentWindow: true,
@@ -55,6 +58,14 @@ export default function JobForm() {
       let activeTab: chrome.tabs.Tab = tabs[0];
       let tabUrl = activeTab.url;
       setLink(tabUrl ?? "");
+      if(!activeTab.id){
+        throw Error("couldn't find active tab id.")
+      }
+      extractCurrentPageHTML(activeTab.id).then((html)=>{
+        setRole(parsePage2(html));
+      }).catch(e=>{
+        throw Error(e);
+      })
     });
   }, [chrome.tabs]);
 
