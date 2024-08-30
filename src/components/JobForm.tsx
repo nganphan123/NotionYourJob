@@ -10,7 +10,11 @@ import {
   Stack,
 } from "@mui/material";
 import Logo from "./Logo";
-import { extractCurrentPageHTML, parsePage, parsePage2 } from "../parsing";
+import {
+  extractCurrentPageHTML,
+  parsePage,
+  parsePage2,
+} from "../parser/parsing";
 
 export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
@@ -58,14 +62,23 @@ export default function JobForm() {
       let activeTab: chrome.tabs.Tab = tabs[0];
       let tabUrl = activeTab.url;
       setLink(tabUrl ?? "");
-      if(!activeTab.id){
-        throw Error("couldn't find active tab id.")
+      if (!activeTab.id) {
+        throw Error("couldn't find active tab id.");
       }
-      extractCurrentPageHTML(activeTab.id).then((html)=>{
-        setRole(parsePage2(html));
-      }).catch(e=>{
-        throw Error(e);
-      })
+      extractCurrentPageHTML(activeTab.id)
+        .then((html) => {
+          // TODO: wait till page finished loading to get correct component
+          let result = parsePage2(html, tabUrl ?? "");
+          if (result) {
+            setRole(result.title ?? "");
+            setCompany(result.company ?? "");
+            // TODO: add location
+            // setplac(result.title);
+          }
+        })
+        .catch((e) => {
+          throw Error(e);
+        });
     });
   }, [chrome.tabs]);
 
@@ -93,6 +106,7 @@ export default function JobForm() {
           label="Role"
           onChange={onRoleChange}
           size="small"
+          value={role}
         />
       </FormControl>
       <FormControl required>

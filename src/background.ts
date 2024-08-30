@@ -1,5 +1,5 @@
 import { addDescriptionPage, addJob } from "./notion";
-import { extractCurrentPageHTML, parsePage } from "./parsing";
+import { extractCurrentPageHTML, parsePage } from "./parser/parsing";
 
 export enum MessageType {
   ADD_JOB = 1,

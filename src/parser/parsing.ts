@@ -11,11 +11,33 @@ export function parsePage(html: string) {
   return desc;
 }
 
+export interface ParseObject {
+  company: string | undefined;
+  title: string | undefined;
+  location: string | undefined;
+}
+
 // TODO: refactor parsePage()
-export function parsePage2(html: string){
+export function parsePage2(html: string, url: string) {
+  if (url == "") {
+    // TODO: throw error if url is empty
+    console.log("Url is empty");
+    return null;
+  }
+  const result: ParseObject = {
+    company: "",
+    title: "",
+    location: "",
+  };
   let parser = parse(html);
-  const h1 = parser.querySelector("h1");
-  return h1? h1.text : "";
+  result.title = parser.querySelector("h1")?.text.trim();
+  result.company = parser
+    .querySelector('a[href*="linkedin.com/company"]')
+    ?.text.trim();
+  result.location = parser
+    .querySelector("span.tvm__text tvm__text--low-emphasis")
+    ?.text.trim();
+  return result;
 }
 
 export async function extractCurrentPageHTML(activeTabId: number) {
