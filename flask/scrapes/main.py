@@ -24,7 +24,7 @@ def crawl_job():
     file = open('./output/train{idx}.txt'.format(idx=options.page), 'a')
     # file = open('../ner/test_data/file{idx}.txt'.format(idx=0), 'a')
     for result in results:
-        file.write(result['item']+'\n')
+        file.write(str(result)+'\n')
     file.close()
 
 if __name__ == "__main__":
