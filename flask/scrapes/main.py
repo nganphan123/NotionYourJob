@@ -1,3 +1,4 @@
+import json
 from args import get_provider, get_provider_handler, get_arg_parser
 from scrapy.crawler import CrawlerProcess
 from scrapy.signalmanager import dispatcher
@@ -21,10 +22,12 @@ def crawl_job():
     process.crawl(spider, int(options.linkedin))
     process.start()
     # TODO: take train file index input
-    file = open('./output/train{idx}.txt'.format(idx=options.page), 'a')
+    file = open('./output2/train{idx}.json'.format(idx=options.page), 'w')
     # file = open('../ner/test_data/file{idx}.txt'.format(idx=0), 'a')
-    for result in results:
-        file.write(str(result)+'\n')
+    results = [result["result"] for result in results]
+    # for result in results:
+    #     file.write(str(result)+'\n')
+    json.dump(results, file)
     file.close()
 
 if __name__ == "__main__":

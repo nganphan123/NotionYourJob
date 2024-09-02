@@ -39,6 +39,6 @@ def get_arg_parser():
         "-lp", "--linkedin", default = 1
     )
     parser.add_argument(
-        "--page", default=0
+        "--page", default=1
     )
     return parser

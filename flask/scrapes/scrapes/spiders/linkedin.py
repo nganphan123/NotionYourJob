@@ -52,26 +52,25 @@ class LinkedInSpider(scrapy.Spider):
 
     def parseJobDescrib(self, response):
         self.logger.info("Visited next page %s", response.url)
-
-        def extract_part(htmlQuery):
-            return response.css(htmlQuery).get(default="").strip()
-
-        # extract listing items
-        # top_card_layout = response.css(
-        #     "div.top-card-layout__entity-info"
-        # ).get()
-        # soup = BeautifulSoup(top_card_layout, 'html.parser')
-        # text_string = soup.get_text(' . ', strip=True)
-        # # text_string = re.sub(' \n', '', text_string)
-        # soup = BeautifulSoup(response.body, "lxml")
-        # text_string = "".join([s.strip() for s in soup.text.split("\n")])
-
-        # yield {'item': text_string}
         soup = BeautifulSoup(response.body, "html.parser")
-        # print(soup)
-        object_combined_text = "".join([s.strip() for s in soup.text.split("\n")])
-        # TODO: add try catch
-        job_title = soup.find("h1", class_="top-card-layout__title").get_text().strip()
-        location = soup.select("span.topcard__flavor.topcard__flavor--bullet")[0].get_text().strip()
-        company = soup.find("a", class_="topcard__org-name-link").get_text().strip()
-        yield {"job_title": job_title, "location": location, "company": company, "description": object_combined_text}
+        item = PreItem()
+        item.error = []
+        doc_text = []
+        for s in soup.text.split("\n"):
+            # remove extra spaces
+            s = re.sub(" +", " ", s)
+            if s == "" or s == " ":
+                continue
+            doc_text.append(s.strip())
+        item.describ = ".".join(doc_text)
+        item.role = soup.find("h1", class_="top-card-layout__title").get_text().strip()
+        if item.role == "":
+            item.error.append("No job title is found.")
+        try:
+            item.location = soup.select("span.topcard__flavor.topcard__flavor--bullet")[0].get_text().strip()
+        except IndexError:
+            item.error.append("No location is found.")
+        item.company = soup.find("a", class_="topcard__org-name-link").get_text().strip()
+        if item.company == "":
+            item.error.append("No company is found.")
+        yield item
