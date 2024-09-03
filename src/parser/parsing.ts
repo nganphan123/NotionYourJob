@@ -28,7 +28,8 @@ const htmlTags = {
   [Domain.LINKEDIN]: {
     title: "div.job-details-jobs-unified-top-card__job-title>h1",
     company: "div.job-details-jobs-unified-top-card__company-name>a",
-    location: "span.tvm__text tvm__text--low-emphasis",
+    location:
+      "div.job-details-jobs-unified-top-card__primary-description-container>div>span",
   },
   // public
   [Domain.GLASSDOOR]: {
@@ -40,7 +41,7 @@ const htmlTags = {
   [Domain.INDEED]: {
     title: "h2.jobsearch-JobInfoHeader-title.css-1t78hkx.e1tiznh50>span",
     company: "div[data-company-name]>span>a",
-    location: "div.css-waniwe eu4oa1w0>div",
+    location: "div.css-waniwe.eu4oa1w0>div",
   },
 };
 // TODO: refactor parsePage()

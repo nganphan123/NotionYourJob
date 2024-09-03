@@ -78,7 +78,7 @@ export default function JobForm() {
             setRole(result.title ?? "");
             setCompany(result.company ?? "");
             // TODO: add location
-            // setplac(result.title);
+            result.location ? setLocation(result.location) : null;
           }
         })
         .catch((e) => {
