@@ -8,12 +8,14 @@ export interface AddJobRequest {
   type: MessageType.ADD_JOB;
   company: string;
   role: string;
+  location: string;
   link: string;
   activeTabId: number;
 }
 chrome.runtime.onMessage.addListener(async function ({
   company,
   role,
+  location,
   link,
   activeTabId,
 }: AddJobRequest) {
@@ -28,7 +30,7 @@ chrome.runtime.onMessage.addListener(async function ({
       `${company}-${role}`
     );
     // add new job to db
-    await addJob(company, role, link, descPageId);
+    await addJob(company, role, location, link, descPageId);
   } catch (e) {
     console.log("error ", e);
   }

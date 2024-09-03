@@ -20,6 +20,7 @@ export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
   const [company, setCompany] = useState<string>("");
   const [role, setRole] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
   const [link, setLink] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [activeTab, setTabId] = useState<chrome.tabs.Tab>();
@@ -37,6 +38,7 @@ export default function JobForm() {
     chrome.runtime.sendMessage({
       type: MessageType.ADD_JOB,
       company: company,
+      location: location,
       role: role,
       link: link,
       activeTabId: activeTabId,
@@ -47,6 +49,9 @@ export default function JobForm() {
   }, []);
   const onRoleChange = useCallback((e: any) => {
     setRole(e.target.value);
+  }, []);
+  const onLocationChange = useCallback((e: any) => {
+    setLocation(e.target.value);
   }, []);
   const onJobLinkChange = useCallback((e: any) => {
     setLink(e.target.value);
@@ -108,6 +113,16 @@ export default function JobForm() {
           onChange={onRoleChange}
           size="small"
           value={role}
+        />
+      </FormControl>
+      <FormControl>
+        <InputLabel htmlFor="location">Location</InputLabel>
+        <OutlinedInput
+          id="location"
+          label="Location"
+          onChange={onLocationChange}
+          size="small"
+          value={location}
         />
       </FormControl>
       <FormControl required>

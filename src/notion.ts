@@ -80,6 +80,9 @@ async function createJobDatabase(parentPageId: string) {
       Role: {
         rich_text: {},
       },
+      Location: {
+        rich_text: {},
+      },
       Status: {
         select: {
           options: [
@@ -156,6 +159,7 @@ export async function addDescriptionPage(description: string[], title: string) {
 export async function addJob(
   company: string,
   role: string,
+  location: string,
   link: string,
   descPageId: string
 ) {
@@ -172,6 +176,17 @@ export async function addJob(
             type: "text",
             text: {
               content: company,
+            },
+          },
+        ],
+      },
+      Location: {
+        type: "rich_text",
+        rich_text: [
+          {
+            type: "text",
+            text: {
+              content: location,
             },
           },
         ],
