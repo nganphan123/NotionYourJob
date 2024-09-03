@@ -18,16 +18,29 @@ export interface ParseObject {
 }
 
 enum Domain {
-  LINKEDIN = "www.linkedin.com",
-  GLASSDOOR = "www.glassdoor.com",
-  INDEED = "www.indeed.com",
+  LINKEDIN = "linkedin",
+  GLASSDOOR = "glassdoor",
+  INDEED = "indeed",
 }
 
 const htmlTags = {
+  // logged in
   [Domain.LINKEDIN]: {
-    title: "h1",
+    title: "div.job-details-jobs-unified-top-card__job-title>h1",
     company: "div.job-details-jobs-unified-top-card__company-name>a",
     location: "span.tvm__text tvm__text--low-emphasis",
+  },
+  // public
+  [Domain.GLASSDOOR]: {
+    title: "div.JobDetails_jobDetailsHeader__Hd9M3>h1",
+    company: "div.EmployerProfile_employerNameContainer__tb7JV>h4",
+    location: "div.JobDetails_location__mSg5h",
+  },
+  //public
+  [Domain.INDEED]: {
+    title: "h2.jobsearch-JobInfoHeader-title.css-1t78hkx.e1tiznh50>span",
+    company: "div[data-company-name]>span>a",
+    location: "div.css-waniwe eu4oa1w0>div",
   },
 };
 // TODO: refactor parsePage()
@@ -43,19 +56,18 @@ export function parsePage2(html: string, url: string) {
     location: "",
   };
   let hostname: string = new URL(url).hostname;
-  let tagObject;
-  switch (hostname) {
-    case Domain.LINKEDIN:
-      tagObject = htmlTags[Domain.LINKEDIN];
-      break;
-    default: // TODO: ui component to notify users to add values themselves
-      console.log("No predefined tags for current domain.");
-      return null;
+  let tagObject = Object.entries(htmlTags).find(([key, _]) =>
+    hostname.includes(key)
+  );
+  if (!tagObject) {
+    // TODO: ui component to notify users to add values themselves
+    console.log("No predefined tags for current domain.");
+    return null;
   }
   let parser = parse(html);
-  result.title = parser.querySelector(tagObject.title)?.text.trim();
-  result.company = parser.querySelector(tagObject.company)?.text.trim();
-  result.location = parser.querySelector(tagObject.location)?.text.trim();
+  result.title = parser.querySelector(tagObject[1].title)?.text.trim();
+  result.company = parser.querySelector(tagObject[1].company)?.text.trim();
+  result.location = parser.querySelector(tagObject[1].location)?.text.trim();
   return result;
 }
 
