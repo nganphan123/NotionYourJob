@@ -97,6 +97,7 @@ export default function JobForm() {
           label="Company"
           onChange={onCompanyChange}
           size="small"
+          value={company}
         />
       </FormControl>
       <FormControl required>

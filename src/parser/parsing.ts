@@ -17,6 +17,19 @@ export interface ParseObject {
   location: string | undefined;
 }
 
+enum Domain {
+  LINKEDIN = "www.linkedin.com",
+  GLASSDOOR = "www.glassdoor.com",
+  INDEED = "www.indeed.com",
+}
+
+const htmlTags = {
+  [Domain.LINKEDIN]: {
+    title: "h1",
+    company: "div.job-details-jobs-unified-top-card__company-name>a",
+    location: "span.tvm__text tvm__text--low-emphasis",
+  },
+};
 // TODO: refactor parsePage()
 export function parsePage2(html: string, url: string) {
   if (url == "") {
@@ -29,14 +42,20 @@ export function parsePage2(html: string, url: string) {
     title: "",
     location: "",
   };
+  let hostname: string = new URL(url).hostname;
+  let tagObject;
+  switch (hostname) {
+    case Domain.LINKEDIN:
+      tagObject = htmlTags[Domain.LINKEDIN];
+      break;
+    default: // TODO: ui component to notify users to add values themselves
+      console.log("No predefined tags for current domain.");
+      return null;
+  }
   let parser = parse(html);
-  result.title = parser.querySelector("h1")?.text.trim();
-  result.company = parser
-    .querySelector('a[href*="linkedin.com/company"]')
-    ?.text.trim();
-  result.location = parser
-    .querySelector("span.tvm__text tvm__text--low-emphasis")
-    ?.text.trim();
+  result.title = parser.querySelector(tagObject.title)?.text.trim();
+  result.company = parser.querySelector(tagObject.company)?.text.trim();
+  result.location = parser.querySelector(tagObject.location)?.text.trim();
   return result;
 }
 
