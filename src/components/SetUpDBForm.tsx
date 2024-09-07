@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { getAccessiblePages, setupNotion } from "../notion";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { Navigate } from "react-router-dom";
+import Logo from "./Logo";
+import { Button, Stack } from "@mui/material";
 
 interface pageTitle {
   title: string;
@@ -59,18 +61,33 @@ export default function SetDBForm() {
     return <Navigate to={"/job"} />;
   }
   return (
-    <>
+    <Stack spacing={2} alignItems={"center"}>
+      <Logo width={100} height={50} />
+      <p>
+        Pick the page you want to create your notes in. We'll set up the rest.
+      </p>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {titleList}
       </div>
-      <button
+      {/* <button
         id="submitButton"
         type="submit"
         onClick={onSubmit}
         disabled={redirectToJob}
       >
-        Submit
-      </button>
-    </>
+        Submit */}
+      {/* </button> */}
+      <Button
+        sx={{
+          backgroundColor: "#92A0AD",
+          ":hover": { backgroundColor: "lightslategrey" },
+        }}
+        variant="contained"
+        onClick={onSubmit}
+        disabled={redirectToJob}
+      >
+        Notion
+      </Button>
+    </Stack>
   );
 }

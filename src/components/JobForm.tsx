@@ -139,6 +139,7 @@ export default function JobForm() {
         sx={{
           backgroundColor: "#92A0AD",
           ":hover": { backgroundColor: "lightslategrey" },
+          margin: "10px",
         }}
         variant="contained"
         onClick={async () => await handleSubmit()}
