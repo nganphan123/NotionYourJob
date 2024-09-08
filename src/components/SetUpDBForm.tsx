@@ -3,7 +3,7 @@ import { getAccessiblePages, setupNotion } from "../notion";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { Navigate } from "react-router-dom";
 import Logo from "./Logo";
-import { Button, Stack } from "@mui/material";
+import { Button, List, ListItem, Stack } from "@mui/material";
 
 interface pageTitle {
   title: string;
@@ -18,6 +18,7 @@ export default function SetDBForm() {
   useEffect(() => {
     async function fetchPages() {
       const pages = (await getAccessiblePages()) as PageObjectResponse[];
+      // TODO: split ui to parent and child pages
       let titles: pageTitle[] = [];
       pages.forEach((notionPage) => {
         const titleProp: any = Object.values(notionPage.properties).find(
@@ -47,14 +48,16 @@ export default function SetDBForm() {
   }, [selected]);
   const titleList = titles.map((entity) => {
     return (
-      <label>
-        <a href={entity.url}>{entity.title}</a>:
-        <input
-          type="checkbox"
-          onClick={() => setSelected(entity.id)}
-          checked={entity.id == selected}
-        ></input>
-      </label>
+      <ListItem>
+        <label>
+          <a href={entity.url}>{entity.title}</a>:
+          <input
+            type="checkbox"
+            onClick={() => setSelected(entity.id)}
+            checked={entity.id == selected}
+          ></input>
+        </label>
+      </ListItem>
     );
   });
   if (redirectToJob) {
@@ -66,9 +69,7 @@ export default function SetDBForm() {
       <p>
         Pick the page you want to create your notes in. We'll set up the rest.
       </p>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {titleList}
-      </div>
+      <List sx={{ overflowY: "auto", maxHeight: "150px" }}>{titleList}</List>
       {/* <button
         id="submitButton"
         type="submit"
