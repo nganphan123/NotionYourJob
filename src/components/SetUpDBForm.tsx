@@ -3,7 +3,7 @@ import { getAccessiblePages, setupNotion } from "../notion";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { Navigate } from "react-router-dom";
 import Logo from "./Logo";
-import { Button, List, ListItem, Stack } from "@mui/material";
+import { Button, CircularProgress, List, ListItem, Stack } from "@mui/material";
 
 interface pageTitle {
   title: string;
@@ -15,6 +15,7 @@ export default function SetDBForm() {
   const [titles, setTitles] = useState<pageTitle[]>([]);
   const [selected, setSelected] = useState<string>("");
   const [redirectToJob, setRedirectToJob] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     async function fetchPages() {
       const pages = (await getAccessiblePages()) as PageObjectResponse[];
@@ -38,6 +39,7 @@ export default function SetDBForm() {
   }, []);
   const onSubmit = useCallback(() => {
     try {
+      setIsLoading(true);
       setupNotion(selected).then(() => {
         setRedirectToJob(true);
       });
@@ -62,6 +64,12 @@ export default function SetDBForm() {
   });
   if (redirectToJob) {
     return <Navigate to={"/job"} />;
+  } else if (isLoading || titles.length == 0) {
+    return (
+      <Stack alignItems={"center"}>
+        <CircularProgress color="inherit" />
+      </Stack>
+    );
   }
   return (
     <Stack spacing={2} alignItems={"center"}>
@@ -70,14 +78,6 @@ export default function SetDBForm() {
         Pick the page you want to create your notes in. We'll set up the rest.
       </p>
       <List sx={{ overflowY: "auto", maxHeight: "150px" }}>{titleList}</List>
-      {/* <button
-        id="submitButton"
-        type="submit"
-        onClick={onSubmit}
-        disabled={redirectToJob}
-      >
-        Submit */}
-      {/* </button> */}
       <Button
         sx={{
           backgroundColor: "#92A0AD",

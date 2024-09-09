@@ -15,6 +15,6 @@ export default function RequireAuth({ children }: { children: ReactElement }) {
   if (isLoggedIn) {
     return children;
   } else {
-    return <div>Login...</div>;
+    return <div>Login to your Notion</div>;
   }
 }
