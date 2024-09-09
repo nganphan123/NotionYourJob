@@ -61,10 +61,8 @@ export function login() {
         }),
       });
       let accessToken: string = await response.json().then((json) => {
-        console.log("work id ", json["workspace_id"]);
         return json["access_token"];
       });
-      console.log("access tokrn", accessToken);
       // store access token to chrome storage
       await setAccessToken(accessToken);
     }

@@ -15,6 +15,10 @@ export default function RequireAuth({ children }: { children: ReactElement }) {
   if (isLoggedIn) {
     return children;
   } else {
-    return <div>Login to your Notion</div>;
+    return (
+      <div>
+        <p>Login to your Notion. Once login, reopen the extension window.</p>
+      </div>
+    );
   }
 }

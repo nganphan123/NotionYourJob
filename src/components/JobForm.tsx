@@ -22,6 +22,7 @@ export default function JobForm() {
   const [role, setRole] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [link, setLink] = useState<string>("");
+  const [onSubmitting, setOnSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [activeTab, setTabId] = useState<chrome.tabs.Tab>();
   const handleSubmit = async () => {
@@ -43,6 +44,7 @@ export default function JobForm() {
       link: link,
       activeTabId: activeTabId,
     });
+    setOnSubmitting(true);
   };
   const onCompanyChange = useCallback((e: any) => {
     setCompany(e.target.value);
@@ -56,6 +58,16 @@ export default function JobForm() {
   const onJobLinkChange = useCallback((e: any) => {
     setLink(e.target.value);
   }, []);
+
+  // restric submit button click
+  useEffect(() => {
+    if (onSubmitting) {
+      const timer = setTimeout(() => {
+        setOnSubmitting(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [onSubmitting]);
 
   useEffect(() => {
     getDBId().then((value) => {
@@ -143,7 +155,7 @@ export default function JobForm() {
         }}
         variant="contained"
         onClick={async () => await handleSubmit()}
-        disabled={!company || !link || !role}
+        disabled={!company || !link || !role || onSubmitting}
       >
         Notion
       </Button>
