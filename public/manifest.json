@@ -6,5 +6,11 @@
   "permissions": ["activeTab", "scripting", "storage", "identity", "tabs"],
   "background": { "service_worker": "background.js" },
   "action": { "default_popup": "index.html" },
-  "host_permissions": ["https://api.notion.com/v1/pages/*"]
+  "host_permissions": ["https://api.notion.com/v1/pages/*"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["selection.js"]
+    }
+  ]
 }
