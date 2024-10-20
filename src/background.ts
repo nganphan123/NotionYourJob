@@ -43,34 +43,3 @@ chrome.runtime.onMessage.addListener(async function ({
     console.log("error ", e);
   }
 });
-
-// Context menu creation
-const tldLocales = {
-  "Save to Job Title": MessageType.EXTRACTED_JOB_TITLE,
-  "Save to Company": MessageType.EXTRACTED_COMPANY,
-  "Save to Location": MessageType.EXTRACTED_LOCATION,
-};
-
-chrome.runtime.onInstalled?.addListener(async () => {
-  for (let [actionName, messageType] of Object.entries(tldLocales)) {
-    chrome.contextMenus.create({
-      id: messageType,
-      title: actionName,
-      type: "normal",
-      contexts: ["action"],
-    });
-  }
-});
-
-export interface JobInfo {
-  type: MessageType;
-  info: string;
-}
-function contextClicks(info: any, tab: any) {
-  const { menuItemId, selectionText } = info;
-  chrome.runtime.sendMessage({
-    type: menuItemId,
-    info: selectionText,
-  });
-}
-// chrome.contextMenus?.onClicked.addListener(contextClicks);

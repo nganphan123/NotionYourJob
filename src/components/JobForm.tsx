@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getDBId } from "../store";
 import { Navigate } from "react-router-dom";
-import { JobInfo, MessageType } from "../background";
+import { MessageType } from "../background";
 import {
   Button,
   FormControl,
