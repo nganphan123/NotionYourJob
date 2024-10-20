@@ -10,7 +10,6 @@ const handleTxtSelected = function (e) {
   chrome.runtime.sendMessage({
     type: MessageType,
   });
-  console.log("selected text" + e.target.innerText);
 };
 // Mouse listener for any move event on the current document.
 document.addEventListener(

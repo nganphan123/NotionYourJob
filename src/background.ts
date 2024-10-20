@@ -15,6 +15,7 @@ export interface AddJobRequest {
   location: string;
   link: string;
   activeTabId: number;
+  status: string;
 }
 chrome.runtime.onMessage.addListener(async function ({
   type,
@@ -23,6 +24,7 @@ chrome.runtime.onMessage.addListener(async function ({
   location,
   link,
   activeTabId,
+  status,
 }: AddJobRequest) {
   if (type != MessageType.ADD_JOB) {
     return;
@@ -38,7 +40,7 @@ chrome.runtime.onMessage.addListener(async function ({
       `${company}-${role}`
     );
     // add new job to db
-    await addJob(company, role, location, link, descPageId);
+    await addJob(company, role, location, link, descPageId, status);
   } catch (e) {
     console.log("error ", e);
   }

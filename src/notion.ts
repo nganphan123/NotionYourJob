@@ -28,6 +28,12 @@ getDBId().then((id) => {
   }
 });
 
+export enum Status {
+  APPLIED = "Applied",
+  READY_TO_APPLY = "Ready to apply",
+  REJECTED = "Rejected",
+}
+
 // parent page containing job database and description container
 export async function setupNotion(workspaceId: string) {
   const response = await notion.pages.create({
@@ -86,9 +92,9 @@ async function createJobDatabase(parentPageId: string) {
       Status: {
         select: {
           options: [
-            { name: "Applied", color: "blue" },
-            { name: "Ready to apply", color: "gray" },
-            { name: "Rejected", color: "red" },
+            { name: Status.APPLIED, color: "blue" },
+            { name: Status.READY_TO_APPLY, color: "gray" },
+            { name: Status.REJECTED, color: "red" },
           ],
         },
       },
@@ -161,7 +167,8 @@ export async function addJob(
   role: string,
   location: string,
   link: string,
-  descPageId: string
+  descPageId: string,
+  status: string
 ) {
   await notion.pages.create({
     parent: {
@@ -205,6 +212,12 @@ export async function addJob(
       Link: {
         type: "url",
         url: link,
+      },
+      Status: {
+        type: "select",
+        select: {
+          name: status,
+        },
       },
       Description: {
         type: "rich_text",

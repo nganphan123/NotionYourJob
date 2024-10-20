@@ -6,7 +6,9 @@ import {
   Button,
   FormControl,
   InputLabel,
+  MenuItem,
   OutlinedInput,
+  Select,
   Stack,
 } from "@mui/material";
 import Logo from "./Logo";
@@ -15,12 +17,14 @@ import {
   parsePage,
   parsePage2,
 } from "../parser/parsing";
+import { Status } from "../notion";
 
 export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
   const [company, setCompany] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [location, setLocation] = useState<string>("");
+  const [status, setStatus] = useState<string>(Status.READY_TO_APPLY);
   const [link, setLink] = useState<string>("");
   const [onSubmitting, setOnSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -41,6 +45,7 @@ export default function JobForm() {
       location: location,
       role: role,
       link: link,
+      status: status,
       activeTabId: activeTabId,
     });
     setOnSubmitting(true);
@@ -56,6 +61,9 @@ export default function JobForm() {
   }, []);
   const onJobLinkChange = useCallback((e: any) => {
     setLink(e.target.value);
+  }, []);
+  const onStatusChange = useCallback((e: any) => {
+    setStatus(e.target.value);
   }, []);
 
   // restric submit button click
@@ -149,6 +157,16 @@ export default function JobForm() {
           defaultValue={link}
           size="small"
         />
+      </FormControl>
+      <FormControl sx={{ m: 1, width: "100%" }} size="small">
+        <InputLabel>Status</InputLabel>
+        <Select value={status} label="Status" onChange={onStatusChange}>
+          <MenuItem value={Status.APPLIED}>{Status.APPLIED}</MenuItem>
+          <MenuItem value={Status.READY_TO_APPLY}>
+            {Status.READY_TO_APPLY}
+          </MenuItem>
+          <MenuItem value={Status.REJECTED}>{Status.REJECTED}</MenuItem>
+        </Select>
       </FormControl>
       <Button
         sx={{
