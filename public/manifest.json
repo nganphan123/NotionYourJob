@@ -3,7 +3,14 @@
   "name": "Notion Your Job",
   "version": "1.0.0",
   "description": "This extension is made for job hunters to track their applications",
-  "permissions": ["activeTab", "scripting", "storage", "identity", "tabs"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "identity",
+    "tabs",
+    "contextMenus"
+  ],
   "background": { "service_worker": "background.js" },
   "action": { "default_popup": "index.html" },
   "host_permissions": ["https://api.notion.com/v1/pages/*"],

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getDBId } from "../store";
 import { Navigate } from "react-router-dom";
-import { MessageType } from "../background";
+import { JobInfo, MessageType } from "../background";
 import {
   Button,
   FormControl,
@@ -31,7 +31,6 @@ export default function JobForm() {
       active: true,
       currentWindow: true,
     });
-
     var activeTabId = chromeTabs[0].id;
     if (!activeTabId) {
       throw Error("Couldn't find active tab id");
@@ -98,6 +97,10 @@ export default function JobForm() {
         });
     });
   }, [chrome.tabs]);
+
+  // chrome.runtime.onMessage.addListener((message: JobInfo) => {
+  //   console.log("got message " + message);
+  // });
 
   if (dbId == undefined) {
     return <div>Loading</div>;
