@@ -4,6 +4,7 @@ import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { Navigate } from "react-router-dom";
 import Logo from "./Logo";
 import { Button, CircularProgress, List, ListItem, Stack } from "@mui/material";
+import { findNotionPageTitle } from "../utils/findProp";
 
 interface pageTitle {
   title: string;
@@ -22,12 +23,10 @@ export default function SetDBForm() {
       // TODO: split ui to parent and child pages
       let titles: pageTitle[] = [];
       pages.forEach((notionPage) => {
-        const titleProp: any = Object.values(notionPage.properties).find(
-          (prop: any) => prop.id == "title"
-        );
-        if (titleProp.title.length > 0) {
+        const pageTitle: string = findNotionPageTitle(notionPage);
+        if (pageTitle != null) {
           titles.push({
-            title: titleProp.title[0].text.content as string,
+            title: pageTitle,
             url: notionPage.url,
             id: notionPage.id,
           });
