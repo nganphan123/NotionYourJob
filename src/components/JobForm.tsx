@@ -8,7 +8,9 @@ import {
 } from "@notionhq/client/build/src/api-endpoints";
 import {
   Button,
+  Container,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -24,6 +26,7 @@ import {
 import { getResumes, Status } from "../notion";
 import { isOfTypeNotionPage } from "../utils/checkType";
 import { findNotionPageTitle } from "../utils/findProp";
+import { RemoveRedEyeOutlined } from "@mui/icons-material";
 
 interface Resume {
   name: string;
@@ -63,6 +66,9 @@ export default function JobForm() {
       resumeId: resumeId,
     });
     setOnSubmitting(true);
+  };
+  const handleViewClick = async (url: string) => {
+    chrome.tabs.create({ url: url });
   };
   const onCompanyChange = useCallback((e: any) => {
     setCompany(e.target.value);
@@ -208,7 +214,17 @@ export default function JobForm() {
         <InputLabel>Resume</InputLabel>
         <Select value={resumeId} label="Resume" onChange={onResumeChange}>
           {resumeList?.map((resume) => (
-            <MenuItem value={resume.id}>{resume.name}</MenuItem>
+            <MenuItem value={resume.id}>
+              <Container>
+                {resume.name}
+                <IconButton
+                  onClick={async () => handleViewClick(resume.url)}
+                  size="small"
+                >
+                  <RemoveRedEyeOutlined />
+                </IconButton>
+              </Container>
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
