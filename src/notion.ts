@@ -245,3 +245,10 @@ export async function getAccessiblePages() {
   });
   return response.results;
 }
+
+export async function getResumes() {
+  const response = await notion.databases.query({
+    database_id: "",
+  });
+  return response.results;
+}

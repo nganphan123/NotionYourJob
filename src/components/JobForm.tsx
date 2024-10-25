@@ -3,6 +3,10 @@ import { getDBId } from "../store";
 import { Navigate } from "react-router-dom";
 import { MessageType } from "../background";
 import {
+  PageObjectResponse,
+  PartialPageObjectResponse,
+} from "@notionhq/client/build/src/api-endpoints";
+import {
   Button,
   FormControl,
   InputLabel,
@@ -17,8 +21,15 @@ import {
   parsePage,
   parsePage2,
 } from "../parser/parsing";
-import { Status } from "../notion";
+import { getResumes, Status } from "../notion";
+import { isOfTypeNotionPage } from "../utils/checkType";
+import { findNotionPageTitle } from "../utils/findProp";
 
+interface Resume {
+  name: string;
+  id: string;
+  url: string;
+}
 export default function JobForm() {
   const [dbId, setDbId] = useState<string>();
   const [company, setCompany] = useState<string>("");
@@ -26,6 +37,8 @@ export default function JobForm() {
   const [location, setLocation] = useState<string>("");
   const [status, setStatus] = useState<string>(Status.READY_TO_APPLY);
   const [link, setLink] = useState<string>("");
+  const [resume, setResume] = useState<string>("");
+  const [resumeList, setResumeList] = useState<Resume[]>();
   const [onSubmitting, setOnSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [activeTab, setTabId] = useState<chrome.tabs.Tab>();
@@ -79,6 +92,25 @@ export default function JobForm() {
   useEffect(() => {
     getDBId().then((value) => {
       setDbId(value);
+    });
+  });
+
+  useEffect(() => {
+    getResumes().then((values) => {
+      const pageObjects = values.filter((value) => isOfTypeNotionPage(value));
+      const resumes = [] as Resume[];
+      pageObjects.forEach((value) => {
+        const pageObj = value as PageObjectResponse;
+        const pageTitle = findNotionPageTitle(pageObj);
+        if (pageTitle != "") {
+          resumes.push({
+            url: pageObj.url,
+            name: pageTitle,
+            id: pageObj.id,
+          });
+        }
+      });
+      setResumeList(resumes);
     });
   });
   useEffect(() => {
