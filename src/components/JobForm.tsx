@@ -37,7 +37,7 @@ export default function JobForm() {
   const [location, setLocation] = useState<string>("");
   const [status, setStatus] = useState<string>(Status.READY_TO_APPLY);
   const [link, setLink] = useState<string>("");
-  const [resume, setResume] = useState<string>("");
+  const [resumeId, setResumeId] = useState<string>("");
   const [resumeList, setResumeList] = useState<Resume[]>();
   const [onSubmitting, setOnSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -60,6 +60,7 @@ export default function JobForm() {
       link: link,
       status: status,
       activeTabId: activeTabId,
+      resumeId: resumeId,
     });
     setOnSubmitting(true);
   };
@@ -77,6 +78,9 @@ export default function JobForm() {
   }, []);
   const onStatusChange = useCallback((e: any) => {
     setStatus(e.target.value);
+  }, []);
+  const onResumeChange = useCallback((e: any) => {
+    setResumeId(e.target.value);
   }, []);
 
   // restric submit button click
@@ -112,7 +116,7 @@ export default function JobForm() {
       });
       setResumeList(resumes);
     });
-  });
+  }, []);
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       let activeTab: chrome.tabs.Tab = tabs[0];
@@ -198,6 +202,14 @@ export default function JobForm() {
             {Status.READY_TO_APPLY}
           </MenuItem>
           <MenuItem value={Status.REJECTED}>{Status.REJECTED}</MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl sx={{ m: 1, width: "100%" }} size="small">
+        <InputLabel>Resume</InputLabel>
+        <Select value={resumeId} label="Resume" onChange={onResumeChange}>
+          {resumeList?.map((resume) => (
+            <MenuItem value={resume.id}>{resume.name}</MenuItem>
+          ))}
         </Select>
       </FormControl>
       <Button
