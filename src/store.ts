@@ -55,6 +55,28 @@ export async function setDescContainerId(id: string) {
   });
 }
 
+// Resume db Id
+const RESUME_DB_ID = "resumeDBId";
+export function getResumeDBId() {
+  return toPromise((resolve: any, reject: any) => {
+    chrome.storage.local.get([RESUME_DB_ID], (result) => {
+      if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+      resolve(result[RESUME_DB_ID] ?? "");
+    });
+  });
+}
+
+export async function setResumeDBId(id: string) {
+  return toPromise((resolve: any, reject: any) => {
+    chrome.storage.local.set({ [RESUME_DB_ID]: id }, () => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      }
+      resolve("Store resume db id successfully");
+    });
+  });
+}
+
 const ACCESS_TOKEN = "accessToken";
 export function getAcessToken() {
   return toPromise((resolve: any, reject: any) => {
