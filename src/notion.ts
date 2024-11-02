@@ -3,14 +3,18 @@ import {
   getAcessToken,
   getDBId,
   getDescContainerId,
+  getResumeDBId,
   setDBId,
   setDescContainerId,
+  setResumeDBId,
 } from "./store";
 
 let apiKey: string = "";
 let notion: Client;
 let descContainerId: string = "";
 let dbId: string = "";
+let resumeDBId: string = "";
+const refreshTime = 1000;
 getAcessToken().then((key) => {
   if (key != "") {
     apiKey = key;
@@ -25,6 +29,11 @@ getDescContainerId().then((id) => {
 getDBId().then((id) => {
   if (id != "") {
     dbId = id;
+  }
+});
+getResumeDBId().then((id) => {
+  if (id != "") {
+    resumeDBId = id;
   }
 });
 
@@ -52,16 +61,32 @@ export async function setupNotion(workspaceId: string) {
       ],
     },
   });
+  let delay = (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
   let createDb = createJobDatabase(response.id).then(async (id) => {
     await setDBId(id);
   });
-  let createDescContainer = setTimeout(() => {
-    addDescContainer(response.id).then(async (id) => {
-      await setDescContainerId(id);
-    });
-  }, 1000);
+  let createDescContainer = addDescContainer(response.id).then(async (id) => {
+    await setDescContainerId(id);
+  });
+  let createResumeDb = createResumeDatabase(response.id).then(async (id) => {
+    await setResumeDBId(id);
+  });
+  console.log("start 1st time out");
+  await delay(refreshTime);
+  console.log("done 1st time out");
+  console.log("call create desc container api");
+  await createDescContainer;
+  console.log("done create desc container api");
+  console.log("start 2nd time out");
+  await delay(refreshTime);
+  console.log("finish second time out");
+  console.log("call crate resume db api");
+  await createResumeDb;
+  console.log("finish create resume db api");
+  await delay(refreshTime);
   await createDb;
-  createDescContainer;
 }
 
 // job database
@@ -104,6 +129,12 @@ async function createJobDatabase(parentPageId: string) {
       Description: {
         rich_text: {},
       },
+      Resumes: {
+        relation: {
+          database_id: resumeDBId,
+          single_property: {},
+        },
+      },
     },
   });
   return response.id;
@@ -129,6 +160,33 @@ async function addDescContainer(parentPageId: string) {
   return response.id;
 }
 
+// resume database
+async function createResumeDatabase(parentPageId: string) {
+  const response = await notion.databases.create({
+    parent: {
+      type: "page_id",
+      page_id: parentPageId,
+    },
+    title: [
+      {
+        type: "text",
+        text: {
+          content: "Resumes",
+        },
+      },
+    ],
+    properties: {
+      Name: {
+        title: {},
+      },
+      File: {
+        files: {},
+      },
+    },
+  });
+  return response.id;
+}
+
 export async function addDescriptionPage(description: string[], title: string) {
   const response = await notion.pages.create({
     parent: {
@@ -145,19 +203,35 @@ export async function addDescriptionPage(description: string[], title: string) {
       ],
     },
 
-    children: description.map((line: string) => ({
-      bulleted_list_item: {
-        rich_text: [
-          {
-            type: "text",
-            text: {
-              content: line,
-              link: null,
+    //   children: description.map((line: string) => ({
+    //     bulleted_list_item: {
+    //       rich_text: [
+    //         {
+    //           type: "text",
+    //           text: {
+    //             content: line,
+    //             link: null,
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   })),
+    // TODO: temporary -> remove
+    children: [
+      {
+        bulleted_list_item: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: "",
+                link: null,
+              },
             },
-          },
-        ],
+          ],
+        },
       },
-    })),
+    ],
   });
   return response.id;
 }
@@ -168,7 +242,8 @@ export async function addJob(
   location: string,
   link: string,
   descPageId: string,
-  status: string
+  status: string,
+  resumeId: string
 ) {
   await notion.pages.create({
     parent: {
@@ -232,6 +307,10 @@ export async function addJob(
           },
         ],
       },
+      Resumes: {
+        type: "relation",
+        relation: [{ id: resumeId }],
+      },
     },
   });
 }
@@ -248,7 +327,7 @@ export async function getAccessiblePages() {
 
 export async function getResumes() {
   const response = await notion.databases.query({
-    database_id: "",
+    database_id: resumeDBId,
   });
   return response.results;
 }
