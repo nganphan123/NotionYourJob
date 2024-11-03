@@ -2,10 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getDBId } from "../store";
 import { Navigate } from "react-router-dom";
 import { MessageType } from "../background";
-import {
-  PageObjectResponse,
-  PartialPageObjectResponse,
-} from "@notionhq/client/build/src/api-endpoints";
+import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import {
   Button,
   Container,
