@@ -11,31 +11,23 @@ import {
 
 let apiKey: string = "";
 let notion: Client;
-let descContainerId: string = "";
 let dbId: string = "";
-let resumeDBId: string = "";
 const refreshTime = 1000;
-getAcessToken().then((key) => {
+
+async function initialize() {
+  const key = await getAcessToken();
   if (key != "") {
     apiKey = key;
     notion = new Client({ auth: apiKey });
   }
-});
-getDescContainerId().then((id) => {
-  if (id != "") {
-    descContainerId = id;
+
+  const dbIdValue = await getDBId();
+  if (dbIdValue != "") {
+    dbId = dbIdValue;
   }
-});
-getDBId().then((id) => {
-  if (id != "") {
-    dbId = id;
-  }
-});
-getResumeDBId().then((id) => {
-  if (id != "") {
-    resumeDBId = id;
-  }
-});
+}
+
+initialize();
 
 export enum Status {
   APPLIED = "Applied",
@@ -61,36 +53,29 @@ export async function setupNotion(workspaceId: string) {
       ],
     },
   });
+
   let delay = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
-  let createDb = createJobDatabase(response.id).then(async (id) => {
-    await setDBId(id);
-  });
-  let createDescContainer = addDescContainer(response.id).then(async (id) => {
-    await setDescContainerId(id);
-  });
-  let createResumeDb = createResumeDatabase(response.id).then(async (id) => {
-    await setResumeDBId(id);
-  });
-  console.log("start 1st time out");
+
+  // Add job description database in notions
+  const descContainerId = await addDescContainer(response.id);
+  await setDescContainerId(descContainerId);
   await delay(refreshTime);
-  console.log("done 1st time out");
-  console.log("call create desc container api");
-  await createDescContainer;
-  console.log("done create desc container api");
-  console.log("start 2nd time out");
+
+  // Add resume database in notion
+  const resumeDbId = await createResumeDatabase(response.id);
+  await setResumeDBId(resumeDbId);
   await delay(refreshTime);
-  console.log("finish second time out");
-  console.log("call crate resume db api");
-  await createResumeDb;
-  console.log("finish create resume db api");
-  await delay(refreshTime);
-  await createDb;
+
+  // Add main job database in notion
+  const jobDbId = await createJobDatabase(response.id);
+  await setDBId(jobDbId);
 }
 
 // job database
 async function createJobDatabase(parentPageId: string) {
+  const resumeDBId = await getResumeDBId();
   const response = await notion.databases.create({
     parent: {
       type: "page_id",
@@ -188,6 +173,7 @@ async function createResumeDatabase(parentPageId: string) {
 }
 
 export async function addDescriptionPage(description: string[], title: string) {
+  const descContainerId = await getDescContainerId();
   const response = await notion.pages.create({
     parent: {
       type: "page_id",
@@ -326,6 +312,7 @@ export async function getAccessiblePages() {
 }
 
 export async function getResumes() {
+  const resumeDBId = await getResumeDBId();
   const response = await notion.databases.query({
     database_id: resumeDBId,
   });
