@@ -1,22 +1,36 @@
 import { addDescriptionPage, addJob } from "./notion";
-import { extractCurrentPageHTML, parsePage } from "./parsing";
+import { extractCurrentPageHTML, parsePage } from "./parser/parsing";
 
 export enum MessageType {
-  ADD_JOB = 1,
+  // turn into string because chrome context menu item take string as id
+  ADD_JOB = "1",
+  EXTRACTED_JOB_TITLE = "2",
+  EXTRACTED_LOCATION = "3",
+  EXTRACTED_COMPANY = "4",
 }
 export interface AddJobRequest {
   type: MessageType.ADD_JOB;
   company: string;
   role: string;
+  location: string;
   link: string;
   activeTabId: number;
+  status: string;
+  resumeId: string;
 }
 chrome.runtime.onMessage.addListener(async function ({
+  type,
   company,
   role,
+  location,
   link,
   activeTabId,
+  status,
+  resumeId,
 }: AddJobRequest) {
+  if (type != MessageType.ADD_JOB) {
+    return;
+  }
   // parse page
   let description: string[] = [];
   try {
@@ -28,7 +42,7 @@ chrome.runtime.onMessage.addListener(async function ({
       `${company}-${role}`
     );
     // add new job to db
-    await addJob(company, role, link, descPageId);
+    await addJob(company, role, location, link, descPageId, status, resumeId);
   } catch (e) {
     console.log("error ", e);
   }

@@ -5,6 +5,13 @@ const webpack = require("webpack");
 module.exports = {
   mode: "production",
   entry: {
+    selection: path.resolve(
+      __dirname,
+      "..",
+      "src",
+      "textSelection",
+      "selection.js"
+    ),
     background: path.resolve(__dirname, "..", "src", "background.ts"),
     auth: path.resolve(__dirname, "..", "src", "auth.ts"),
     index: "./src/index.tsx",
@@ -34,6 +41,10 @@ module.exports = {
         exclude: /node_modules/,
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
       },
     ],
   },

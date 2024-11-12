@@ -1,14 +1,6 @@
 body {
   width: 200px;
-  height: 200px;
-  background-color: #b8d0e8;
-}
-.MuiInputBase-root {
-  background-color: lightsteelblue;
-  opacity: 80%;
-}
-button {
-  background-color: lightsteelblue;
+  max-height: 450px;
 }
 /* #error-message {
   display: none;
