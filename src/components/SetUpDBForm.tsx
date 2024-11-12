@@ -66,6 +66,7 @@ export default function SetDBForm() {
   } else if (isLoading || titles.length == 0) {
     return (
       <Stack alignItems={"center"}>
+        <div>🛑 Form is being set up. Don't close the popup!</div>
         <CircularProgress color="inherit" />
       </Stack>
     );
