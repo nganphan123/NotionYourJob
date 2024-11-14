@@ -56,9 +56,6 @@ module.exports = {
       "process.env.NOTION_OAUTH_CLIENT": JSON.stringify(
         process.env.NOTION_OAUTH_CLIENT || ""
       ),
-      "process.env.CHROME_EXTENSION_ID": JSON.stringify(
-        process.env.CHROME_EXTENSION_ID || ""
-      ),
     }),
     // new HtmlWebpackPlugin({
     //   title: "notionjobs"

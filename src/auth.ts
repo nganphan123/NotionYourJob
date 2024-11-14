@@ -3,7 +3,7 @@ import { getAcessToken as getAccessToken, setAccessToken } from "./store";
 
 const NOTION_OAUTH_CLIENT = process.env.NOTION_OAUTH_CLIENT;
 const NOTION_OAUTH_SECRET = process.env.NOTION_OAUTH_SECRET;
-const CHROME_EXTENSION_ID = process.env.CHROME_EXTENSION_ID;
+const CHROME_EXTENSION_ID = chrome.runtime.id;
 const NOTION_AUTH_REDIRECT_URL = `https://${CHROME_EXTENSION_ID}.chromiumapp.org/notion-app`;
 const NOTION_AUTH_URL = `https://api.notion.com/v1/oauth/authorize?client_id=${NOTION_OAUTH_CLIENT}&response_type=code&owner=user&redirect_uri=${encodeURIComponent(
   NOTION_AUTH_REDIRECT_URL!
