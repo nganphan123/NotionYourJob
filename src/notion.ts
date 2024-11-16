@@ -295,7 +295,7 @@ export async function addJob(
       },
       Resumes: {
         type: "relation",
-        relation: [],
+        relation: [{ id: resumeId }],
       },
     },
   });
