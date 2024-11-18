@@ -2,12 +2,10 @@
   <img src="/images/logo.svg" />
 </p>
 
-# Notion Your Job
+# [Notion Your Job](https://chromewebstore.google.com/detail/notion-your-job/kidlkkpdnkmdjoapmokjnipojbfhjcgf?authuser=1&hl=en-GB)
 
 
 https://github.com/user-attachments/assets/4a2e2948-4e98-4a7e-ad17-67fea3f19784
-
-
 
 This is a Chrome extension that lets you track your job application in just one click. As a Notion enthusiast who uses Notion to track down all the tasks and a job hunter, I used to switch between browser tabs to add new application records to my Notion table. This is, of course, a repetitive task for job hunter who aims for a plethora of applications per day. Hence, I decided to automate the steps by leveraging Chrome extension, which is within reach on the same tab. Moreover, the extension can automatically record the URL and job description for your reference later. This is a summary of what the extension can do:
 
@@ -17,8 +15,11 @@ This is a Chrome extension that lets you track your job application in just one 
 
 ## Getting Started
 
-The extension is not yet published in the Chrome store so these are the steps for you to install it locally.
+Check out the extension:
+1. Install the extension [here](https://chromewebstore.google.com/detail/notion-your-job/kidlkkpdnkmdjoapmokjnipojbfhjcgf?authuser=1&hl=en-GB)
+2. [How to use](https://angry-dosa-94c.notion.site/Home-page-f591676116b6499fb416a6074213a929#141d0a530122803ea8bde38301f38715)
 
+The steps below guide you on how to run the extension locally
 ### Prerequisites
 
 1. Chrome browser
