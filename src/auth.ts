@@ -65,6 +65,7 @@ export function login() {
       });
       // store access token to chrome storage
       await setAccessToken(accessToken);
+      chrome.runtime.reload();
     }
   );
 }
