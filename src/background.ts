@@ -1,3 +1,4 @@
+import { login } from "./auth";
 import { addDescriptionPage, addJob } from "./notion";
 import { extractCurrentPageHTML, parsePage } from "./parser/parsing";
 
@@ -7,6 +8,7 @@ export enum MessageType {
   EXTRACTED_JOB_TITLE = "2",
   EXTRACTED_LOCATION = "3",
   EXTRACTED_COMPANY = "4",
+  LOG_IN = "5"
 }
 export interface AddJobRequest {
   type: MessageType.ADD_JOB;
@@ -18,6 +20,12 @@ export interface AddJobRequest {
   status: string;
   resumeId: string;
 }
+chrome.runtime.onMessage.addListener(async function({type}){
+  if(type != MessageType.LOG_IN){
+    return;
+  }
+  login();
+});
 chrome.runtime.onMessage.addListener(async function ({
   type,
   company,
