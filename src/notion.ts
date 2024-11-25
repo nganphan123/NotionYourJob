@@ -8,6 +8,7 @@ import {
   setDescContainerId,
   setResumeDBId,
 } from "./store";
+import { DatabaseObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
 let apiKey: string = "";
 let notion: Client;
@@ -295,7 +296,7 @@ export async function addJob(
       },
       Resumes: {
         type: "relation",
-        relation: resumeId != "" ? [{ id: resumeId }]:[],
+        relation: resumeId != "" ? [{ id: resumeId }] : [],
       },
     },
   });
@@ -317,4 +318,12 @@ export async function getResumes() {
     database_id: resumeDBId,
   });
   return response.results;
+}
+
+export async function getResumeDBURL() {
+  const resumeDBId = await getResumeDBId();
+  const response = await notion.databases.retrieve({
+    database_id: resumeDBId,
+  });
+  return (response as DatabaseObjectResponse).url;
 }

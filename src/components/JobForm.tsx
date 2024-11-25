@@ -15,12 +15,8 @@ import {
   Stack,
 } from "@mui/material";
 import Logo from "./Logo";
-import {
-  extractCurrentPageHTML,
-  parsePage,
-  parsePage2,
-} from "../parser/parsing";
-import { getResumes, Status } from "../notion";
+import { extractCurrentPageHTML, parsePage2 } from "../parser/parsing";
+import { getResumeDBURL, getResumes, Status } from "../notion";
 import { isOfTypeNotionPage } from "../utils/checkType";
 import { findNotionPageTitle } from "../utils/findProp";
 import { RemoveRedEyeOutlined } from "@mui/icons-material";
@@ -38,7 +34,7 @@ export default function JobForm() {
   const [status, setStatus] = useState<string>(Status.READY_TO_APPLY);
   const [link, setLink] = useState<string>("");
   const [resumeId, setResumeId] = useState<string>("");
-  const [resumeList, setResumeList] = useState<Resume[]>();
+  const [resumeList, setResumeList] = useState<Resume[]>([]);
   const [onSubmitting, setOnSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [activeTab, setTabId] = useState<chrome.tabs.Tab>();
@@ -64,7 +60,7 @@ export default function JobForm() {
     });
     setOnSubmitting(true);
   };
-  const handleViewClick = async (url: string) => {
+  const handleRedirectClick = async (url: string) => {
     chrome.tabs.create({ url: url });
   };
   const onCompanyChange = useCallback((e: any) => {
@@ -210,19 +206,43 @@ export default function JobForm() {
       <FormControl sx={{ m: 1, width: "100%" }} size="small">
         <InputLabel>Resume</InputLabel>
         <Select value={resumeId} label="Resume" onChange={onResumeChange}>
-          {resumeList?.map((resume) => (
-            <MenuItem value={resume.id}>
-              <Container>
-                {resume.name}
-                <IconButton
-                  onClick={async () => handleViewClick(resume.url)}
-                  size="small"
+          {resumeList.length > 0 ? (
+            resumeList.map((resume) => (
+              <MenuItem value={resume.id}>
+                <Container>
+                  {resume.name}
+                  <IconButton
+                    onClick={async () => handleRedirectClick(resume.url)}
+                    size="small"
+                  >
+                    <RemoveRedEyeOutlined />
+                  </IconButton>
+                </Container>
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem>
+              <Stack alignItems={"center"}>
+                <div style={{ fontSize: "12px" }}>
+                  Not found. Upload new resume.
+                </div>
+                <Button
+                  sx={{
+                    backgroundColor: "#92A0AD",
+                    ":hover": { backgroundColor: "lightslategrey" },
+                    margin: "10px",
+                  }}
+                  variant="contained"
+                  onClick={async () => {
+                    const resumeDBURL = await getResumeDBURL();
+                    await handleRedirectClick(resumeDBURL);
+                  }}
                 >
-                  <RemoveRedEyeOutlined />
-                </IconButton>
-              </Container>
+                  Upload
+                </Button>
+              </Stack>
             </MenuItem>
-          ))}
+          )}
         </Select>
       </FormControl>
       <Button
